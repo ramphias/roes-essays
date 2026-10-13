@@ -1,0 +1,51 @@
+# ROES Essays — GitHub Pages publish (official actions-based flow).
+# First publish: set Settings -> Pages -> Build and deployment -> Source:
+# GitHub Actions (once), then merge to main or run this workflow manually.
+# No tokens or credentials are stored in this repository; the workflow uses
+# the built-in GITHUB_TOKEN with the minimal permissions declared below.
+
+name: Deploy Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Build (integrity-gated, no dependencies)
+        run: node scripts/build.mjs
+      - name: Verify (hash / structure / language / links)
+        run: node scripts/verify.mjs
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

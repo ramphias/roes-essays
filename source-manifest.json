@@ -1,0 +1,25 @@
+{
+  "articles": [
+    {
+      "slug": "2026-09-27-recursive-intelligence-evolution",
+      "date": "2026-09-27",
+      "mode": "split",
+      "zh_title": "递归智能进化与复利智能资本",
+      "files": {
+        "zh": "essays/2026-09-27-recursive-intelligence-evolution.zh.md",
+        "en": "essays/2026-09-27-recursive-intelligence-evolution.en.md"
+      },
+      "sha256": {
+        "zh": "436f9bb93f3cc42fda4fe41383a8d2357df81c48180c7a204579cb6c6aed5570",
+        "en": "c7a7419c3e4ef4e9b468641106cfc9a4aa776a835acbc93ba406ff0b7da5140f"
+      }
+    },
+    {
+      "slug": "2026-09-29-what-becomes-scarce",
+      "date": "2026-09-29",
+      "mode": "bilingual",
+      "file": "essays/2026-09-29-what-becomes-scarce.md",
+      "sha256": "b20790e8cbd2b62d09d3b592590d54e1d9e09b272767ad3a11f67fdab11de4c5"
+    }
+  ]
+}
