@@ -215,7 +215,7 @@ h1{font-family:var(--font-display);font-size:clamp(26px,5.2vw,32px);font-weight:
 .site-foot .note{margin:0;max-width:42rem;line-height:1.7}
 .index-intro{margin:2.5rem 0 0}
 .index-intro p{margin:0 0 1rem;color:var(--text-2)}
-.index-intro p[lang="en"]{color:var(--muted)}
+.index-intro p[lang="zh-Hans"]{color:var(--muted)}
 .essay-list{list-style:none;margin:2.5rem 0 3.5rem;padding:0}
 .essay-list li{padding:2rem 0;border-top:1px solid var(--line)}
 .essay-list li:last-child{border-bottom:1px solid var(--line)}
@@ -351,26 +351,27 @@ ${siteFooter()}
 }
 
 function indexPage(articles) {
-  const items = articles
+  const items = [...articles]
+    .sort((a, b) => b.date.localeCompare(a.date))
     .map((a) => `      <li>
         <p class="date"><time datetime="${a.date}">${a.date}</time></p>
-        <h2><a href="${a.dated}/">${escapeHtml(a.zhTitle)}</a></h2>
-        <p class="alt-title" lang="en"><a href="en/${a.dated}/">${escapeHtml(a.enTitle)}</a></p>
-        <p class="links"><a href="${a.dated}/" lang="zh-Hans">中文版</a><a href="en/${a.dated}/" lang="en">English</a><a href="${ROES_BLOG_ZH}/${a.dated}">官网原文</a></p>
+        <h2><a href="en/${a.dated}/">${escapeHtml(a.enTitle)}</a></h2>
+        <p class="alt-title" lang="zh-Hans"><a href="${a.dated}/">${escapeHtml(a.zhTitle)}</a></p>
+        <p class="links"><a href="en/${a.dated}/" lang="en">Read in English</a><a href="${ROES_BLOG_EN}/${a.dated}">Original on ROES</a><a href="${a.dated}/" lang="zh-Hans">中文</a></p>
       </li>`)
     .join('\n');
 
   return `<!DOCTYPE html>
-<html lang="zh-Hans">
+<html lang="en">
 <head>
 ${head({
-    title: 'ROES Essays · 思考与文章',
-    description: '关于递归智能进化、智能归属与 AI 经济关系的持续思考。Essays on recursive intelligence evolution, intelligence ownership, and the economics of AI. 原文发布于 roes.pro，本站为阅读镜像。',
+    title: 'ROES Essays',
+    description: 'Essays on recursive intelligence evolution, intelligence ownership, and the economics of AI. Originally published on roes.pro; this is a reading mirror offering English and Chinese reading pages.',
     canonical: `${SITE_BASE}/`,
     alternates: [],
     og: {
-      title: 'ROES Essays · 思考与文章',
-      description: '关于递归智能进化、智能归属与 AI 经济关系的文章镜像。原文位于 roes.pro。',
+      title: 'ROES Essays',
+      description: 'Essays on recursive intelligence evolution, intelligence ownership, and the economics of AI. Originally published on roes.pro.',
       type: 'website',
       url: `${SITE_BASE}/`,
     },
@@ -380,13 +381,13 @@ ${head({
 <header class="site-head">
   <div class="wrap">
     <a class="wordmark" href="./" aria-current="page">ROES · Essays</a>
-    <nav aria-label="目录 / Index"><a href="${ROES_BLOG_ZH}" lang="zh-Hans">官网目录</a><a href="${ROES_BLOG_EN}" lang="en">Website</a></nav>
+    <nav aria-label="Index"><a href="${ROES_BLOG_EN}" lang="en">ROES blog</a><a href="${ROES_BLOG_ZH}" lang="zh-Hans">中文目录</a></nav>
   </div>
 </header>
 <main class="wrap">
   <div class="index-intro">
-    <p lang="zh-Hans">关于递归智能进化、智能归属与 AI 经济关系的公开文章。原文发布于 <a href="${ROES_HOME}">roes.pro</a>；本站提供中英双语阅读页，原稿完整保存于本仓库。</p>
-    <p lang="en">Public essays on recursive intelligence evolution, intelligence ownership, and the economics of AI. Originally published on <a href="${ROES_HOME}">roes.pro</a>; this mirror offers per-language reading pages, with the source manuscripts preserved in this repository.</p>
+    <p lang="en">Essays on recursive intelligence evolution, intelligence ownership, and the economics of AI. Originally published on <a href="${ROES_HOME}">roes.pro</a>; this mirror offers English and Chinese reading pages, with the source manuscripts preserved in this repository.</p>
+    <p lang="zh-Hans">中文阅读入口见各篇。原文发布于 <a href="${ROES_HOME}">roes.pro</a>；原稿完整保存于本仓库。</p>
   </div>
   <ul class="essay-list">
 ${items}

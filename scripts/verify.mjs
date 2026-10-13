@@ -263,12 +263,21 @@ for (const a of articles) {
 
 console.log('[3-index] dist/index.html');
 const indexHtml = readFileSync(join(DIST, 'index.html'), 'utf8');
-check((indexHtml.match(/<link rel="canonical" href="([^"]*)"/) || [])[1] === `${SITE_BASE}/`, 'index self-canonical');
+check((indexHtml.match(/<html[^>]*lang="([^"]*)"/) || [])[1] === 'en', 'index html lang = en (English-first root)');
+const indexTitle = (indexHtml.match(/<title>([^<]*)<\/title>/) || [])[1];
+check(indexTitle === 'ROES Essays', 'index <title> = ROES Essays');
+check((indexHtml.match(/property="og:title" content="([^"]*)"/) || [])[1] === 'ROES Essays', 'index og:title = ROES Essays');
+check((indexHtml.match(/<link rel="canonical" href="([^"]*)"/) || [])[1] === `${SITE_BASE}/`, 'index self-canonical (root URL unchanged)');
 check((indexHtml.match(/property="og:url" content="([^"]*)"/) || [])[1] === `${SITE_BASE}/`, 'index og:url');
 for (const a of articles) {
-  check(indexHtml.includes(`href="${a.dated}/"`), `index links zh page ${a.dated}/`);
-  check(indexHtml.includes(`href="en/${a.dated}/"`), `index links en page en/${a.dated}/`);
-  check(indexHtml.includes(`${ROES}/about/blog/${a.dated}`), `index links original ${a.dated}`);
+  check(indexHtml.includes(`href="en/${a.dated}/"`), `index primary english reading en/${a.dated}/`);
+  check(indexHtml.includes(`href="${a.dated}/"`), `index chinese entry reachable ${a.dated}/`);
+  check(indexHtml.includes(`${ROES}/about/blog/en/${a.dated}`), `index links english original ${a.dated}`);
+}
+const byDateDesc = [...articles].sort((x, y) => y.date.localeCompare(x.date));
+for (let i = 0; i + 1 < byDateDesc.length; i += 1) {
+  check(indexHtml.indexOf(`en/${byDateDesc[i].dated}/`) < indexHtml.indexOf(`en/${byDateDesc[i + 1].dated}/`),
+    `index ordering newest-first: ${byDateDesc[i].date} before ${byDateDesc[i + 1].date}`);
 }
 console.log('[6-index] links');
 checkLinks('index.html', indexHtml);
